@@ -59,12 +59,12 @@ The model is configured to automatically download the **Person Face Sketches** d
 ### Photo to Sketch
 | Input Photo | Generated Sketch |
 | :---: | :---: |
-| <img src="./results/photo_input.jpg" width="250" /> | <img src="./results/sketch_output.jpg" width="250" /> |
+| <img src="./results/photo_input.png" width="250" /> | <img src="./results/sketch_output.png" width="250" /> |
 
 ### Sketch to Photo
 | Input Sketch | Generated Photo |
 | :---: | :---: |
-| <img src="./results/sketch_input.jpg" width="250" /> | <img src="./results/photo_output.jpg" width="250" /> |
+| <img src="./results/sketch_input.jpg" width="250" /> | <img src="./results/photo_output.png" width="250" /> |
 
 
 ## 🧠 Model Architecture
