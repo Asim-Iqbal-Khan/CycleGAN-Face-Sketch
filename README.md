@@ -1,10 +1,10 @@
 # Face-Sketch-CycleGAN
 
-A TensorFlow implementation of CycleGAN for bidirectional image-to-image translation between **Human Faces** and **Face Sketches**. This project includes a Flask web application that automatically detects the input type (Photo or Sketch) and translates it to the opposite domain.
+A TensorFlow implementation of CycleGAN for bidirectional image-to-image translation between **Human Faces** and **Face Sketches**.
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange)
-![Flask](https://img.shields.io/badge/Flask-Web%20App-green)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ## 📝 Description
 
@@ -12,45 +12,72 @@ This project utilizes Generative Adversarial Networks (GANs), specifically the *
 
 The repository features a trained model capable of:
 1.  **Photo $\rightarrow$ Sketch:** Converting real human faces into artistic sketches.
-2.  **Sketch $\rightarrow$ Photo:** reconstructing realistic faces from line drawings.
+2.  **Sketch $\rightarrow$ Photo:** Reconstructing realistic faces from line drawings.
 
 ## ✨ Features
 
 * **CycleGAN Architecture:** Implements two Generators (G, F) and two Discriminators (X, Y) with cycle-consistency loss.
-* **Bidirectional Translation:** A single web interface handles translations in both directions.
-* **Auto-Detection:** The Flask app analyzes image saturation to automatically determine if the uploaded file is a Sketch or a Photo.
-* **Web Interface:** A simple, user-friendly HTML/Flask frontend for uploading and viewing results.
+* **Bidirectional Translation:** The model trains both directions simultaneously (Photo to Sketch and Sketch to Photo).
+* **Group Normalization:** Uses GroupNormalization (acting as Instance Normalization) to preserve style independent of batch size.
+* **Google Drive Integration:** The notebook includes setup for saving checkpoints directly to Google Drive to prevent data loss.
 
 ## 📂 Dataset
 
-The model is trained on the **Person Face Sketches** dataset from Kaggle.
+The model is configured to automatically download the **Person Face Sketches** dataset from Kaggle using `opendatasets`.
 * **Source:** [Kaggle - Person Face Sketches](https://www.kaggle.com/datasets/almightyj/person-face-sketches)
 * **Size:** ~4,000 images (Photos and Sketches).
 
-## 🛠️ Installation
+## 📁 Project Structure
 
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/your-username/Face-Sketch-CycleGAN.git](https://github.com/your-username/Face-Sketch-CycleGAN.git)
-    cd Face-Sketch-CycleGAN
-    ```
+```text
+├── CycleGAN_Face_Sketch.ipynb    # Main Training Notebook (Rename as needed)
+├── README.md               # Project Documentation
+└── results/                # Directory for comparison screenshots
+    ├── photo_result.png    # (Add your images here)
+    └── sketch_result.png   # (Add your images here)
+```
 
-2.  **Install dependencies:**
-    ```bash
-    pip install tensorflow flask opencv-python numpy matplotlib opendatasets
-    ```
 
 ## 🚀 Usage
 
-### 1. Training the Model
-To train the model from scratch, open `Face_Sketch_CycleGAN_Training.ipynb` (formerly `i220787_q1_(1).ipynb`) in Google Colab or a local Jupyter environment.
+1.  **Open the Notebook:**
+    Open `CycleGAN_face_sketch.ipynb` in Google Colab or a Jupyter environment.
 
-* **Data Download:** The notebook automatically downloads the dataset using `opendatasets`. You will need your Kaggle API credentials.
-* **Checkpoints:** The code is configured to save checkpoints to Google Drive to prevent data loss during long training sessions.
+2.  **Install Dependencies:**
+    Run the first cell to install `opendatasets` and import TensorFlow/Keras libraries.
 
-### 2. Running the Web Application
-Once you have trained the models, save the generators as `photo_to_sketch_generator.h5` and `sketch_to_photo_generator.h5` in the root directory.
+3.  **Download Data:**
+    Run the data loading cells. You will be prompted for your Kaggle API username and key.
 
-Run the Flask app:
-```bash
-python app.py
+4.  **Train:**
+    Execute the training loop. The model uses a half-size dataset (approx 4,000 images) for efficiency.
+    * **Checkpoints:** Saved to `/content/drive/MyDrive/Colab_CheckPoints/CycleGAN/train`.
+    * **Final Model:** Saved locally as `photo_to_sketch_generator.h5` and `sketch_to_photo_generator.h5`.
+
+## 📊 Results
+
+### Photo to Sketch
+| Input Photo | Generated Sketch |
+| :---: | :---: |
+| <img src="./results/photo_input.jpg" width="250" /> | <img src="./results/sketch_output.jpg" width="250" /> |
+
+### Sketch to Photo
+| Input Sketch | Generated Photo |
+| :---: | :---: |
+| <img src="./results/sketch_input.jpg" width="250" /> | <img src="./results/photo_output.jpg" width="250" /> |
+
+
+## 🧠 Model Architecture
+
+The project uses the standard CycleGAN architecture:
+
+* **Generators:** U-Net style generators modified to use **GroupNormalization**.
+* **Discriminators:** PatchGAN discriminators that classify $70 \times 70$ overlapping image patches as real or fake.
+* **Loss Functions:**
+    * *Adversarial Loss:* To generate realistic images.
+    * *Cycle Consistency Loss:* Ensures `Photo -> Sketch -> Photo` resembles the original input.
+    * *Identity Loss:* Ensures the generator doesn't change images that already belong to the target domain.
+
+## 📜 License
+
+This project is open-source and available under the MIT License.
